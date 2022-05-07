@@ -1,25 +1,17 @@
 ﻿
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using SevenZipExtractor;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Windows.Forms;
-using System.IO.Compression;
-using SevenZip;
-using SevenZipExtractor;
 using System.Threading.Tasks;
-using System.Globalization;
-using System.Net.NetworkInformation;
-using System.Net.Sockets;
+using System.Windows.Forms;
 
 namespace BndUpdate
 {
@@ -28,15 +20,11 @@ namespace BndUpdate
         public UpdateForm()
         {
             InitializeComponent();
-
         }
 
-        long fileProgress = 0;
-        long totalProgress = 0;
-        bool complete = false;
         private static string guanjiaUrl = "https://pan.baidu.com/disk/cmsdata?platform=guanjia";
-        private static string gitUrl = @"https://api.github.com/repos/zloisupport/BaiduNetDiskTranslation/releases";
-        //   private static string guanjiaRequest = @"{"errorno":0,"total":141,"recommend":"n","recommend_time":"n","list":[{"title":"\u767e\u5ea6\u7f51\u76d8Windows\u7535\u8111\u5ba2\u6237\u7aefV7.15.0.15","version":"\u767e\u5ea6\u7f51\u76d8Windows\u7535\u8111\u5ba2\u6237\u7aefV7.15.0.15","url":"https:\/\/issuepcdn.baidupcs.com\/issue\/netdisk\/yunguanjia\/BaiduNetdisk_7.15.0.15.exe","url_1":"https:\/\/issuepcdn.baidupcs.com\/issue\/netdisk\/yunguanjia\/BaiduNetdisk_7.12.3.5.exe","publish":"2022-04-22 12:00:00","size":"194M","system":"XP\/vista\/win7\/win8\/win10","detail":[{"title":"\u66f4\u65b0\u5185\u5bb9\uff1a","more":["\u3010\u540c\u6b65\u7a7a\u95f4\u3011\u4f18\u5316\u4e86\u6587\u4ef6\u540c\u6b65\u4f53\u9a8c"],"stable":true}]},{"title":"\u767e\u5ea6\u7f51\u76d8Windows\u7535\u8111\u5ba2\u6237\u7aefV7.14.2.9","version":"\u767e\u5ea6\u7f51\u76d8Windows\u7535\u8111\u5ba2\u6237\u7aefV7.14.2.9","url":"https:\/\/issuepcdn.baidupcs.com\/issue\/netdisk\/yunguanjia\/BaiduNetdisk_7.14.2.9.exe","url_1":"https:\/\/issuepcdn.baidupcs.com\/issue\/netdisk\/yunguanjia\/BaiduNetdisk_7.12.3.5.exe","publish":"2022-04-13 16:00:00","size":"196M","system":"XP\/vista\/win7\/win8\/win10","detail":[{"title":"\u66f4\u65b0\u5185\u5bb9\uff1a","more":["Hi\uff0c\u672c\u6b21\u65b0\u5347\u7ea7\u4fee\u590d\u4e86\u5df2\u77e5\u95ee\u9898\uff0c\u4f18\u5316\u4e86\u4f7f\u7528\u4f53\u9a8c ~"],"stable":true}]},{"title":"\u767e\u5ea6\u7f51\u76d8Windows\u7535\u8111\u5ba2\u6237\u7aefV7.14.1.6","version":"\u767e\u5ea6\u7f51\u76d8Windows\u7535\u8111\u5ba2\u6237\u7aefV7.14.1.6","url":"https:\/\/issuepcdn.baidupcs.com\/issue\/netdisk\/yunguanjia\/BaiduNetdisk_7.14.1.6.exe","url_1":" https:\/\/issuepcdn.baidupcs.com\/issue\/netdisk\/yunguanjia\/BaiduNetdisk_7.12.3.5.exe","publish":"2022-03-28 18:30:00","size":"196M","system":"XP\/vista\/win7\/win8\/win10","detail":[{"title":"\u66f4\u65b0\u5185\u5bb9\uff1a","more":["Hi\uff0c\u672c\u6b21\u65b0\u5347\u7ea7\u4fee\u590d\u4e86\u5df2\u77e5\u95ee\u9898\uff0c\u4f18\u5316\u4e86\u4f7f\u7528\u4f53\u9a8c ~"],"stable":true}]},{"title":"\u767e\u5ea6\u7f51\u76d8Windows\u7535\u8111\u5ba2\u6237\u7aefV7.13.0","version":"\u767e\u5ea6\u7f51\u76d8Windows\u7535\u8111\u5ba2\u6237\u7aefV7.13.0","url":"https:\/\/issuepcdn.baidupcs.com\/issue\/netdisk\/yunguanjia\/BaiduNetdisk_7.13.0.21.exe ","url_1":"https:\/\/issuepcdn.baidupcs.com\/issue\/netdisk\/yunguanjia\/BaiduNetdisk_7.12.3.5.exe","publish":"2022-03-09 16:30:00","size":"167M","system":"XP\/vista\/win7\/win8\/win10","detail":[{"title":"\u66f4\u65b0\u5185\u5bb9\uff1a","more":["\u540c\u6b65\u7a7a\u95f4\uff1a\u63d0\u5347\u4e86\u540c\u6b65\u6027\u80fd"],"stable":true}]},{"title":"\u767e\u5ea6\u7f51\u76d8Windows\u7535\u8111\u5ba2\u6237\u7aefV7.12.1","version":"\u767e\u5ea6\u7f51\u76d8Windows\u7535\u8111\u5ba2\u6237\u7aefV7.12.1","url":"https:\/\/issuepcdn.baidupcs.com\/issue\/netdisk\/yunguanjia\/BaiduNetdisk_7.12.1.1.exe","url_1":"https:\/\/issuepcdn.baidupcs.com\/issue\/netdisk\/yunguanjia\/BaiduNetdisk_7.12.1.1.exe","publish":"2022-02-14 12:00:00","size":"167M","system":"XP\/vista\/win7\/win8\/win10","detail":[{"title":"\u66f4\u65b0\u5185\u5bb9\uff1a","more":["Hi\uff0c\u670b\u53cb\u4eec\uff0c\u672c\u6b21\u65b0\u5347\u7ea7\u4fee\u590d\u4e86\u5df2\u77e5\u95ee\u9898\uff0c\u4f18\u5316\u4e86\u4f7f\u7528\u4f53\u9a8c\uff0c\u6765\u7528\u7528\u770b\u5427 ~ "],"stable":true}]}]}";
+        private static readonly string gitUrl = @"https://api.github.com/repos/zloisupport/BaiduNetDiskTranslation/releases";
+
         private void btnCancel_Click(object sender, EventArgs e)
         {
             Application.Exit();
@@ -56,13 +44,8 @@ namespace BndUpdate
                 listBox1.Items.Insert(0, $"BaiduNetdisk.exe Not Found");
                 return null;
             }
-
             var versionInfo = FileVersionInfo.GetVersionInfo(@"../BaiduNetdisk.exe");
             string version = versionInfo.ProductVersion;
-            string versionLanguage = versionInfo.Language;
-            string InternalName = versionInfo.InternalName;
-            string verdate = (string)File.GetLastWriteTime(@"../BaiduNetdisk.exe").ToString();
-
             return version;
         }
 
@@ -98,14 +81,18 @@ namespace BndUpdate
             JArray jsonArray = JArray.Parse(output);
             dynamic categories = JObject.Parse(jsonArray[0].ToString());
             string data1 = categories["assets"][0]["browser_download_url"];
-            if (rbtnRus.Checked) { 
-                 data1 = categories["assets"][1]["browser_download_url"];
+            string locale = "eng";
+            if (rbtnRus.Checked)
+            {
+                data1 = categories["assets"][1]["browser_download_url"];
+                locale = "rus";
             }
- 
+
             string tagName = categories["tag_name"];
             string createdAt = categories["created_at"];
             gitData.Add(tagName);
             gitData.Add(data1);
+            gitData.Add(locale);
             return gitData;
         }
         private List<string> getBaiduVersion(string Version)
@@ -140,11 +127,14 @@ namespace BndUpdate
         }
 
 
+        private void ClearTemp()
+        {
 
+        }
 
         private void UpdateApp(string Url, string name, SevenZipFormat sevenZipFormat)
         {
-            
+
             WebClient webClient = new WebClient();
             if (!Directory.Exists("Temp"))
             {
@@ -164,7 +154,7 @@ namespace BndUpdate
                 progressBar1.Value = 0;
                 toolStripStatusLabel1.Text = "Success";
                 btnGo.Enabled = true;
-                Unzip($@"Temp\\{name}", sevenZipFormat);
+                _ = Unzip($@"Temp\\{name}", sevenZipFormat);
             };
         }
 
@@ -173,14 +163,15 @@ namespace BndUpdate
             string getInstFile = getFileVerison();
             var getSerFile = getGitVersion()[0];
             var getSerFile1 = getGitVersion()[1];
+            var getLocale = getGitVersion()[2];
             var getBaiduFile = getBaiduVersion(getSerFile);
 
-            if(File.Exists($"Temp\\BaiduNetDisk{getSerFile}.exe"))
+            if (checkingFile($"Temp\\BaiduNetDisk{getSerFile}.exe"))
             {
                 btnGo.Enabled = false;
                 progressBar1.Style = ProgressBarStyle.Marquee;
                 toolStripStatusLabel1.Text = "Unpacking ..";
-                await Unzip($@"Temp\\BaiduNetDisk{getSerFile}.exe",SevenZipFormat.Nsis);
+                await Unzip($@"Temp\\BaiduNetDisk{getSerFile}.exe", SevenZipFormat.Nsis);
                 progressBar1.Style = ProgressBarStyle.Continuous;
                 toolStripStatusLabel1.Text = "Success!";
                 btnCancel.Text = "Exit";
@@ -192,19 +183,19 @@ namespace BndUpdate
 
 
 
-            if (File.Exists($"Temp\\BaiduNetDisk{getSerFile}.zip"))
+            if (checkingFile($"Temp\\BaiduNetDisk{getSerFile}{getLocale}.zip"))
             {
                 btnGo.Enabled = false;
                 toolStripStatusLabel1.Text = "Unpacking ..";
                 progressBar1.Style = ProgressBarStyle.Marquee;
-                await Unzip($@"Temp\\BaiduNetDisk{getSerFile}.zip", SevenZipFormat.Zip);
+                await Unzip($@"Temp\\BaiduNetDisk{getSerFile}{getLocale}.zip", SevenZipFormat.Zip);
                 progressBar1.Style = ProgressBarStyle.Continuous;
                 toolStripStatusLabel1.Text = "Success!";
                 btnCancel.Text = "Exit";
             }
             else
             {
-                UpdateApp(getSerFile1, $"BaiduNetDisk{getSerFile}.zip", SevenZipFormat.Zip);
+                UpdateApp(getSerFile1, $"BaiduNetDisk{getSerFile}{getLocale}.zip", SevenZipFormat.Zip);
             }
             DeleteTelemetryFiles();
 
@@ -217,9 +208,10 @@ namespace BndUpdate
             var getSerFile = getGitVersion()[0];
             var getSerFile1 = getGitVersion()[1];
             var getBaiduFile = getBaiduVersion(getSerFile);
-            if (!File.Exists("../BaiduNetdisk.exe")) { 
-                
-                MessageBox.Show("File not found BaiduNetdisk.exe", "Error 01",MessageBoxButtons.OK,MessageBoxIcon.Error);
+            if (!File.Exists("../BaiduNetdisk.exe"))
+            {
+
+                MessageBox.Show("File not found BaiduNetdisk.exe", "Error 01", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
@@ -269,6 +261,10 @@ namespace BndUpdate
                 toolStripStatusLabel1.Text = "Not connection!";
                 btnGo.Enabled = false;
             }
+            if (IsDirectoryEmpty())
+            {
+                btnClearCache.Enabled = false;
+            }
 
         }
         private void DeleteTelemetryFiles()
@@ -296,7 +292,7 @@ namespace BndUpdate
 
             foreach (var file in delFiles)
             {
-              
+
                 if (File.Exists(file))
                 {
                     File.Delete(file);
@@ -310,7 +306,7 @@ namespace BndUpdate
                 }
             }
         }
-        async Task<bool> Unzip(string name ,SevenZipFormat sevenZipFormat)
+        async Task<bool> Unzip(string name, SevenZipFormat sevenZipFormat)
         {
             await Task.Run(() =>
             {
@@ -318,34 +314,29 @@ namespace BndUpdate
                 var archiveFile = new ArchiveFile(fileStream, sevenZipFormat);
                 archiveFile.Extract("../", true);
                 fileStream.Close();
-                
+
                 return true;
             });
-         
+
             return false;
         }
 
-
-     
-        private async void btnGo_Click(object sender, EventArgs e)
+        private void TerminateProcess(string Name)
         {
-            Process[] workers = Process.GetProcessesByName("YunDetectService");
+            Process[] workers = Process.GetProcessesByName(Name);
             foreach (Process worker in workers)
             {
                 worker.Kill();
                 worker.WaitForExit();
                 worker.Dispose();
             }
-            GetAllUrl();
-
-            //string date = DateTime.Now.ToString();
-            //Setting setting = new Setting("ru_RU", date);
-            //setting.CurrentLanugage();
-         //   await Unzip();
-           // await Progress();
-           // MessageBox.Show("Done");  //here we're on the UI thread.
         }
 
+        private void btnGo_Click(object sender, EventArgs e)
+        {
+            TerminateProcess("YunDetectService");
+            GetAllUrl();
+        }
 
         public static bool IsAvailableNetworkActive()
         {
@@ -365,6 +356,29 @@ namespace BndUpdate
             {
                 return false;
             }
+        }
+
+        private void btnClearCache_Click(object sender, EventArgs e)
+        {
+            DirectoryInfo directoryInfo = new DirectoryInfo("Temp");
+
+            foreach(FileInfo file in directoryInfo.GetFiles())
+            {
+                file.Delete();
+            }
+            toolStripStatusLabel1.Text = "Success!";
+            btnClearCache.Enabled = false;
+        }
+
+        //public static bool DirIsEmpty(string path="Temp")
+        //{
+        //    int num = Directory.GetFiles(path).Length + Directory.GetDirectories(path).Length;
+        //    return num == 0;
+        //}
+
+        public bool IsDirectoryEmpty(string path = "Temp")
+        {
+            return !Directory.EnumerateFileSystemEntries(path).Any();
         }
     }
 }

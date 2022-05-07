@@ -46,6 +46,7 @@ namespace BndUpdate
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.lblAbout = new System.Windows.Forms.Label();
+            this.btnClearCache = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.statusStrip1.SuspendLayout();
@@ -99,9 +100,9 @@ namespace BndUpdate
             this.toolStripStatusLabel1,
             this.toolStripStatusLabel2,
             this.toolStripStatusLabel3});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 295);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 292);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(380, 22);
+            this.statusStrip1.Size = new System.Drawing.Size(383, 22);
             this.statusStrip1.TabIndex = 2;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -156,6 +157,7 @@ namespace BndUpdate
             // rbtnEng
             // 
             this.rbtnEng.AutoSize = true;
+            this.rbtnEng.Checked = true;
             this.rbtnEng.Location = new System.Drawing.Point(72, 19);
             this.rbtnEng.Name = "rbtnEng";
             this.rbtnEng.Size = new System.Drawing.Size(44, 17);
@@ -171,7 +173,6 @@ namespace BndUpdate
             this.rbtnRus.Name = "rbtnRus";
             this.rbtnRus.Size = new System.Drawing.Size(44, 17);
             this.rbtnRus.TabIndex = 0;
-            this.rbtnRus.TabStop = true;
             this.rbtnRus.Text = "Rus";
             this.rbtnRus.UseVisualStyleBackColor = true;
             // 
@@ -187,7 +188,7 @@ namespace BndUpdate
             this.pictureBox1.Image = global::BndUpdate.Properties.Resources.header;
             this.pictureBox1.Location = new System.Drawing.Point(0, 0);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(375, 69);
+            this.pictureBox1.Size = new System.Drawing.Size(383, 69);
             this.pictureBox1.TabIndex = 5;
             this.pictureBox1.TabStop = false;
             // 
@@ -199,11 +200,22 @@ namespace BndUpdate
             this.lblAbout.Size = new System.Drawing.Size(0, 13);
             this.lblAbout.TabIndex = 7;
             // 
+            // btnClearCache
+            // 
+            this.btnClearCache.Location = new System.Drawing.Point(197, 193);
+            this.btnClearCache.Name = "btnClearCache";
+            this.btnClearCache.Size = new System.Drawing.Size(174, 31);
+            this.btnClearCache.TabIndex = 8;
+            this.btnClearCache.Text = "Clear cache";
+            this.btnClearCache.UseVisualStyleBackColor = true;
+            this.btnClearCache.Click += new System.EventHandler(this.btnClearCache_Click);
+            // 
             // UpdateForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(380, 317);
+            this.ClientSize = new System.Drawing.Size(383, 314);
+            this.Controls.Add(this.btnClearCache);
             this.Controls.Add(this.progressBar1);
             this.Controls.Add(this.lblAbout);
             this.Controls.Add(this.groupBox3);
@@ -249,6 +261,7 @@ namespace BndUpdate
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel2;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel3;
         private System.Windows.Forms.Label lblAbout;
+        private System.Windows.Forms.Button btnClearCache;
     }
 }
 
