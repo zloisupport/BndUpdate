@@ -44,9 +44,10 @@ namespace BndUpdate
             this.rbtnEng = new System.Windows.Forms.RadioButton();
             this.rbtnRus = new System.Windows.Forms.RadioButton();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.lblAbout = new System.Windows.Forms.Label();
             this.btnClearCache = new System.Windows.Forms.Button();
+            this.bannerAds1 = new AdsJumboWinForm.BannerAds();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.statusStrip1.SuspendLayout();
@@ -60,7 +61,7 @@ namespace BndUpdate
             this.groupBox1.ForeColor = System.Drawing.SystemColors.HotTrack;
             this.groupBox1.Location = new System.Drawing.Point(6, 78);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(180, 100);
+            this.groupBox1.Size = new System.Drawing.Size(180, 62);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Your product version";
@@ -71,7 +72,7 @@ namespace BndUpdate
             this.listBox1.FormattingEnabled = true;
             this.listBox1.Location = new System.Drawing.Point(6, 18);
             this.listBox1.Name = "listBox1";
-            this.listBox1.Size = new System.Drawing.Size(168, 69);
+            this.listBox1.Size = new System.Drawing.Size(168, 30);
             this.listBox1.TabIndex = 0;
             // 
             // groupBox2
@@ -80,7 +81,7 @@ namespace BndUpdate
             this.groupBox2.ForeColor = System.Drawing.SystemColors.HotTrack;
             this.groupBox2.Location = new System.Drawing.Point(191, 78);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(180, 100);
+            this.groupBox2.Size = new System.Drawing.Size(180, 62);
             this.groupBox2.TabIndex = 1;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "New product version";
@@ -91,7 +92,7 @@ namespace BndUpdate
             this.listBox2.FormattingEnabled = true;
             this.listBox2.Location = new System.Drawing.Point(6, 18);
             this.listBox2.Name = "listBox2";
-            this.listBox2.Size = new System.Drawing.Size(168, 69);
+            this.listBox2.Size = new System.Drawing.Size(168, 30);
             this.listBox2.TabIndex = 1;
             // 
             // statusStrip1
@@ -100,9 +101,9 @@ namespace BndUpdate
             this.toolStripStatusLabel1,
             this.toolStripStatusLabel2,
             this.toolStripStatusLabel3});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 292);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 305);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(383, 22);
+            this.statusStrip1.Size = new System.Drawing.Size(378, 22);
             this.statusStrip1.TabIndex = 2;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -124,7 +125,7 @@ namespace BndUpdate
             // 
             // btnGo
             // 
-            this.btnGo.Location = new System.Drawing.Point(6, 249);
+            this.btnGo.Location = new System.Drawing.Point(6, 211);
             this.btnGo.Name = "btnGo";
             this.btnGo.Size = new System.Drawing.Size(180, 31);
             this.btnGo.TabIndex = 3;
@@ -134,7 +135,7 @@ namespace BndUpdate
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(200, 249);
+            this.btnCancel.Location = new System.Drawing.Point(197, 211);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(180, 31);
             this.btnCancel.TabIndex = 4;
@@ -147,7 +148,7 @@ namespace BndUpdate
             this.groupBox3.Controls.Add(this.rbtnEng);
             this.groupBox3.Controls.Add(this.rbtnRus);
             this.groupBox3.ForeColor = System.Drawing.SystemColors.HotTrack;
-            this.groupBox3.Location = new System.Drawing.Point(6, 184);
+            this.groupBox3.Location = new System.Drawing.Point(6, 146);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(180, 42);
             this.groupBox3.TabIndex = 6;
@@ -178,19 +179,10 @@ namespace BndUpdate
             // 
             // progressBar1
             // 
-            this.progressBar1.Location = new System.Drawing.Point(6, 232);
+            this.progressBar1.Location = new System.Drawing.Point(6, 194);
             this.progressBar1.Name = "progressBar1";
             this.progressBar1.Size = new System.Drawing.Size(369, 11);
             this.progressBar1.TabIndex = 2;
-            // 
-            // pictureBox1
-            // 
-            this.pictureBox1.Image = global::BndUpdate.Properties.Resources.header;
-            this.pictureBox1.Location = new System.Drawing.Point(0, 0);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(383, 69);
-            this.pictureBox1.TabIndex = 5;
-            this.pictureBox1.TabStop = false;
             // 
             // lblAbout
             // 
@@ -202,7 +194,7 @@ namespace BndUpdate
             // 
             // btnClearCache
             // 
-            this.btnClearCache.Location = new System.Drawing.Point(197, 193);
+            this.btnClearCache.Location = new System.Drawing.Point(197, 157);
             this.btnClearCache.Name = "btnClearCache";
             this.btnClearCache.Size = new System.Drawing.Size(174, 31);
             this.btnClearCache.TabIndex = 8;
@@ -210,11 +202,33 @@ namespace BndUpdate
             this.btnClearCache.UseVisualStyleBackColor = true;
             this.btnClearCache.Click += new System.EventHandler(this.btnClearCache_Click);
             // 
+            // bannerAds1
+            // 
+            this.bannerAds1.ApplicationId = "tra9blhyt318";
+            this.bannerAds1.BackColor = System.Drawing.Color.White;
+            this.bannerAds1.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.bannerAds1.HeightAd = 320;
+            this.bannerAds1.Location = new System.Drawing.Point(35, 248);
+            this.bannerAds1.Name = "bannerAds1";
+            this.bannerAds1.Size = new System.Drawing.Size(320, 50);
+            this.bannerAds1.TabIndex = 9;
+            this.bannerAds1.WidthAd = 50;
+            // 
+            // pictureBox1
+            // 
+            this.pictureBox1.Image = global::BndUpdate.Properties.Resources.header;
+            this.pictureBox1.Location = new System.Drawing.Point(0, 0);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(383, 69);
+            this.pictureBox1.TabIndex = 5;
+            this.pictureBox1.TabStop = false;
+            // 
             // UpdateForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(383, 314);
+            this.ClientSize = new System.Drawing.Size(378, 327);
+            this.Controls.Add(this.bannerAds1);
             this.Controls.Add(this.btnClearCache);
             this.Controls.Add(this.progressBar1);
             this.Controls.Add(this.lblAbout);
@@ -262,6 +276,8 @@ namespace BndUpdate
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel3;
         private System.Windows.Forms.Label lblAbout;
         private System.Windows.Forms.Button btnClearCache;
+        private AdsJumboWinForm.BannerAds bannerAds1;
+        private AdsJumboWinForm.InterstitialAd interstitialAd1;
     }
 }
 

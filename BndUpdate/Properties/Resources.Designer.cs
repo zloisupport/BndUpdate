@@ -63,26 +63,6 @@ namespace BndUpdate.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap _31337825_786991794822620_4052265673424896000_n {
-            get {
-                object obj = ResourceManager.GetObject("31337825_786991794822620_4052265673424896000_n", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap _31337825_786991794822620_4052265673424896000_n1 {
-            get {
-                object obj = ResourceManager.GetObject("31337825_786991794822620_4052265673424896000_n1", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
         internal static System.Drawing.Bitmap header {
             get {
                 object obj = ResourceManager.GetObject("header", resourceCulture);
