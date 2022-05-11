@@ -125,6 +125,7 @@ namespace BndUpdate
             // 
             // btnGo
             // 
+            this.btnGo.ForeColor = System.Drawing.Color.Teal;
             this.btnGo.Location = new System.Drawing.Point(6, 211);
             this.btnGo.Name = "btnGo";
             this.btnGo.Size = new System.Drawing.Size(180, 31);
@@ -194,6 +195,7 @@ namespace BndUpdate
             // 
             // btnClearCache
             // 
+            this.btnClearCache.ForeColor = System.Drawing.Color.CadetBlue;
             this.btnClearCache.Location = new System.Drawing.Point(197, 157);
             this.btnClearCache.Name = "btnClearCache";
             this.btnClearCache.Size = new System.Drawing.Size(174, 31);

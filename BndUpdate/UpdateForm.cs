@@ -21,9 +21,7 @@ namespace BndUpdate
         {
             InitializeComponent();
             bannerAds1.ShowAd(320,50, "tra9blhyt318");
-            
             //interstitialAd1.ShowInterstitialAd("tra9blhyt318");
-           
         }
 
         private static string guanjiaUrl = "https://pan.baidu.com/disk/cmsdata?platform=guanjia";
@@ -70,7 +68,7 @@ namespace BndUpdate
             var line = "";
             try
             {
-                line = webClient.DownloadString(gitUrl);
+                line = webClient.DownloadString(new Uri(gitUrl));
                 File.WriteAllText("release.json", line);
             }
             catch (System.Net.WebException)
@@ -83,7 +81,7 @@ namespace BndUpdate
                     Environment.Exit(0);
                 }
             }
-         //   line = new StreamReader("release.json").ReadToEnd();
+            //line = new StreamReader("release.json").ReadToEnd();
             dynamic parsedJson = JsonConvert.DeserializeObject(line);
             var output = JsonConvert.SerializeObject(parsedJson, Formatting.Indented);
             JArray jsonArray = JArray.Parse(output);
@@ -106,9 +104,9 @@ namespace BndUpdate
         private List<string> getBaiduVersion(string Version)
         {
             WebClient webClient = new WebClient();
-            var guanjia1 = webClient.DownloadString(guanjiaUrl);
+          var guanjia1 = webClient.DownloadString(guanjiaUrl);
             List<string> baiduData = new List<string>();
-           // var guanjia1 = new StreamReader("guanjia1.json").ReadToEnd();
+        //   var guanjia1 = new StreamReader("guanjia1.json").ReadToEnd();
 
             JObject version = JObject.Parse(guanjia1);
             // Query Select list all version search Version
@@ -140,31 +138,50 @@ namespace BndUpdate
 
         }
 
+        static double ConvertBytesToMegabytes(long bytes)
+        {
+            return (bytes / 1024f) / 1024f;
+        }
+
+        static double ConvertKilobytesToMegabytes(long kilobytes)
+        {
+            return kilobytes / 1024f;
+        }
 
 
-         async Task UpdateApp(string Url, string name, SevenZipFormat sevenZipFormat)
-         {
-            WebClient webClient = new WebClient();
-            if (!Directory.Exists("Temp"))
-            {
-                Directory.CreateDirectory("Temp");
-            }
-            webClient.DownloadFileAsync(new Uri(Url), $@"Temp\\{name}");
-            webClient.DownloadProgressChanged += (s, e) =>
-            {
-                double percentage = e.ProgressPercentage;
-                progressBar1.Value = e.ProgressPercentage;
-                toolStripStatusLabel1.Text = $"{percentage} % {e.BytesReceived} bytes / { e.TotalBytesToReceive} bytes:";
-                btnGo.Enabled = false;
-            };
-            webClient.DownloadFileCompleted +=(s, e) =>
-            {
-                progressBar1.Value = 0;
-                toolStripStatusLabel1.Text = "Completed downloading . . ";
-                btnGo.Enabled = true;
-                btnGo.Text = "Install";
-            };
 
+         async  Task UpdateApp(string Url, string name, SevenZipFormat sevenZipFormat)
+        {
+   
+                if (!Directory.Exists("Temp"))
+                {
+                    Directory.CreateDirectory("Temp");
+                }
+                using (var webClient = new WebClient())
+                {
+                    webClient.DownloadFileAsync(new Uri(Url), $@"Temp\\{name}");
+                    webClient.DownloadProgressChanged += (s, e) =>
+                    {
+                        double TotalReceive = (short)ConvertBytesToMegabytes(e.TotalBytesToReceive);
+                        double MbReceive = (short)ConvertBytesToMegabytes(e.BytesReceived);
+                        double percentage = e.ProgressPercentage;
+                        progressBar1.Value = e.ProgressPercentage;
+                        toolStripStatusLabel1.Text = $"{percentage} % {MbReceive} mb / { TotalReceive} mb:";
+                        btnGo.Enabled = false;
+                    };
+                    webClient.DownloadFileCompleted += (s, e) =>
+                     {
+                         progressBar1.Value = 0;
+                         toolStripStatusLabel1.Text = "Completed downloading . . ";
+                         toolStripStatusLabel1.ForeColor = System.Drawing.Color.Red;
+                         toolStripStatusLabel1.Text = "Click on `Install` button";
+                         btnGo.Enabled = true;
+                         btnGo.Text = "Install";
+                         btnGo.ForeColor = System.Drawing.Color.DarkGreen;
+                     };
+                }
+
+          //  return Task.CompletedTask;
         }
 
         private async void GetAllUrl()
@@ -176,46 +193,32 @@ namespace BndUpdate
             var getBaiduFile = getBaiduVersion(getSerFile);
 
 
-            if (checkingFile($"Temp\\BaiduNetDisk{getSerFile}.exe"))
+            if (checkingFile($"Temp\\BaiduNetDisk{getSerFile}.data") || checkingFile($"Temp\\BaiduNetDisk{getSerFile}{getLocale}.zip"))
             {
                 btnGo.Enabled = false;
                 progressBar1.Style = ProgressBarStyle.Marquee;
-                toolStripStatusLabel1.Text = "Unpacking ..";
-             
-                await Unzip($@"Temp\\BaiduNetDisk{getSerFile}.exe", SevenZipFormat.Nsis);
+                toolStripStatusLabel1.ForeColor = System.Drawing.Color.CadetBlue;
+                toolStripStatusLabel1.Text = "Installing ..";
+                await Unzip($@"Temp\\BaiduNetDisk{getSerFile}.data", SevenZipFormat.Nsis);
+                await Unzip($@"Temp\\BaiduNetDisk{getSerFile}{getLocale}.data", SevenZipFormat.Zip);
                 progressBar1.Style = ProgressBarStyle.Continuous;
-                toolStripStatusLabel1.Text = "Success!";
-                toolStripStatusLabel2.Text = "";
-                toolStripStatusLabel1.BackColor = System.Drawing.Color.Green;
+                toolStripStatusLabel1.ForeColor = System.Drawing.Color.Green;
+                toolStripStatusLabel1.Text = "Installed!";
                 btnCancel.Text = "Exit";
             }
             else
             {
-             await UpdateApp(getBaiduFile[1], $"BaiduNetDisk{getSerFile}.exe", SevenZipFormat.Nsis);
-             
-
+              toolStripStatusLabel1.ForeColor = System.Drawing.Color.CadetBlue;
+              toolStripStatusLabel1.Text = "Downloading...";
+              var x= UpdateApp(getBaiduFile[1], $"BaiduNetDisk{getSerFile}.data", SevenZipFormat.Nsis);
+              var y = UpdateApp(getSerFile1, $"BaiduNetDisk{getSerFile}rus.data", SevenZipFormat.Zip);
+              var i= UpdateApp(getSerFile1, $"BaiduNetDisk{getSerFile}eng.data", SevenZipFormat.Zip);
+             // await Task.WhenAll(x, y, i);
+              await Task.WhenAll(x, y, i);
             }
-
-
-            if (checkingFile($"Temp\\BaiduNetDisk{getSerFile}{getLocale}.zip"))
-            {
-                btnGo.Enabled = false;
-                toolStripStatusLabel1.Text = "Unpacking ..";
-                progressBar1.Style = ProgressBarStyle.Marquee;
-                toolStripStatusLabel2.Text = "";
-                await Unzip($@"Temp\\BaiduNetDisk{getSerFile}{getLocale}.zip", SevenZipFormat.Zip);
-                progressBar1.Style = ProgressBarStyle.Continuous;
-                toolStripStatusLabel1.Text = "Success!";
-                btnCancel.Text = "Exit";
-            }
-            else
-            {
-                await UpdateApp(getSerFile1, $"BaiduNetDisk{getSerFile}rus.zip", SevenZipFormat.Zip);
-                await UpdateApp(getSerFile1, $"BaiduNetDisk{getSerFile}eng.zip", SevenZipFormat.Zip);
-            }
-            DeleteTelemetryFiles();
-
-
+            
+        
+         DeleteTelemetryFiles();
         }
         //
         private void Compare(string gitVersion)
@@ -334,18 +337,19 @@ namespace BndUpdate
         }
         async Task Unzip(string name, SevenZipFormat sevenZipFormat)
         {
+            FileInfo file = new FileInfo(name);
             await Task.Run(() =>
-          {
-              FileStream fileStream = File.OpenRead(name);
-            using (ArchiveFile archiveFile =new ArchiveFile(fileStream, sevenZipFormat))
             {
-                    archiveFile.Extract("../", true);
-                    fileStream.Close();
-             }
-
-          });
-
-
+                if (file.Length != 0 && file.Length > 8034)
+                {
+                    FileStream fileStream = File.OpenRead(name);
+                    using (ArchiveFile archiveFile = new ArchiveFile(fileStream, sevenZipFormat))
+                    {
+                        archiveFile.Extract("../", true);
+                        fileStream.Close();
+                    }
+                }
+            });
         }
 
         private void TerminateProcess(string Name)
@@ -363,9 +367,7 @@ namespace BndUpdate
         {
             TerminateProcess("YunDetectService");
             TerminateProcess("BaiduNetdisk");
-
-            this.BeginInvoke((MethodInvoker)delegate { this.GetAllUrl(); });
-          // ;
+            GetAllUrl();
         }
 
         public static bool IsAvailableNetworkActive()
@@ -405,11 +407,6 @@ namespace BndUpdate
             if (Directory.Exists(path))
                 return !Directory.EnumerateFileSystemEntries(path).Any();
             return true;
-        }
-
-        private async void button1_Click(object sender, EventArgs e)
-        {
-            await Unzip($@"Temp/BaiduNetDisk7.16.0.6.exe", SevenZipFormat.Nsis);
         }
     }
 }
