@@ -103,7 +103,7 @@ namespace BndUpdate
         public static void JsonWriteFile(string line,string name)
         {
             dynamic parsedJson =  JsonConvert.DeserializeObject(line);
-            var data = JsonConvert.SerializeObject(line, Formatting.Indented);
+            var data = JsonConvert.SerializeObject(parsedJson, Formatting.Indented);
 
             File.WriteAllText($@"{name}", data);
         }
@@ -221,7 +221,13 @@ namespace BndUpdate
                 }
             }
         }
-
+        private static void WriteMD5HashFromFile(string hash,string fileName="MD5.json")
+        {
+            using(StreamWriter writer = new StreamWriter(fileName))
+            {
+                writer.WriteLine(hash);
+            }
+        }
         private async Task ExtractFileAsync()
         {
             var format = new Dictionary<string, SevenZipFormat>(){
