@@ -21,12 +21,19 @@ namespace BndUpdate
         public UpdateForm()
         {
             InitializeComponent();
-            //bannerAds1.ShowAd(320,50, "tra9blhyt318");
+            bannerAds1.ShowAd(320, 50, "tra9blhyt318");
             //interstitialAd1.ShowInterstitialAd("tra9blhyt318");
         }
-
+        private static readonly string tempPath = Path.GetTempPath() + "//BND_MOD";
         private static string guanjiaUrl = "https://pan.baidu.com/disk/cmsdata?platform=guanjia";
         private static readonly string gitUrl = @"https://api.github.com/repos/zloisupport/BaiduNetDiskTranslation/releases";
+
+        enum BND
+        {
+            BaiduNetDisk,
+            BaiduNetDiskRU,
+            BaiduNetDiskEn
+        }
 
         private void btnCancel_Click(object sender, EventArgs e)
         {
@@ -64,20 +71,19 @@ namespace BndUpdate
             ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
 
             WebClient webClient = new WebClient();
-            webClient.Headers.Add("user-agent", "Mozilla/4.0 (compatible; MSIE 6.0; " +
-                                  "Windows NT 5.2; .NET CLR 1.0.3705;)");
+            webClient.Headers.Add("user-agent", "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.124 Safari/537.36");
             var line = "";
          
             try
             {
                 line = webClient.DownloadString(new Uri(gitUrl));
-                JsonWriteFile(line, "gitRelease.json");
+                JsonWriteFile(line, tempPath+"//Config//gitRelease.json");
 
             }
             catch (System.Net.WebException)
             {
-                if (checkingFile("release.json"))
-                    line = new StreamReader("release.json").ReadToEnd();
+                if (checkingFile(tempPath+ "//Config//gitRelease.json"))
+                    line = new StreamReader(tempPath+ "//Config//gitRelease.json").ReadToEnd();
                 else
                 {
                     MessageBox.Show($"403 Forbidden\nx-ratelimit-limit: 60\n Please launch later 120min", "Server time out", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -113,7 +119,7 @@ namespace BndUpdate
         {
             WebClient webClient = new WebClient();
              var guanjia1 = webClient.DownloadString(guanjiaUrl);
-            JsonWriteFile(guanjia1, "BaiduRelease.json");
+            JsonWriteFile(guanjia1, tempPath+ "//Config//BaiduRelease.json");
 
             List<string> baiduData = new List<string>();
             // var guanjia1 = new StreamReader("guanjia1.json").ReadToEnd();
@@ -166,12 +172,6 @@ namespace BndUpdate
                 client.DownloadFileCompleted += (s, e) =>
                 {
                     progressBar1.Value = 0;
-                    toolStripStatusLabel1.Text = "Completed downloading . . ";
-                    toolStripStatusLabel1.ForeColor = System.Drawing.Color.Red;
-                    toolStripStatusLabel1.Text = "Click on `Install` button";
-                    btnGo.Enabled = true;
-                    btnGo.Text = "Install";
-                    btnGo.ForeColor = System.Drawing.Color.DarkGreen;
                 };
 
                 client.DownloadProgressChanged += (s, e) =>
@@ -181,9 +181,8 @@ namespace BndUpdate
                     double percentage = e.ProgressPercentage;
                     progressBar1.Value = e.ProgressPercentage;
                     toolStripStatusLabel1.Text = $"{percentage} % {MbReceive} mb / { TotalReceive} mb:";
-                    btnGo.Enabled = false;
                 };
-                  await  client.DownloadFileTaskAsync(new Uri(link), $@"Temp\\{name}");
+                 await client.DownloadFileTaskAsync(new Uri(link), $@"{tempPath}//{name}");
                
             }
         }
@@ -197,6 +196,7 @@ namespace BndUpdate
             var getLocale = getGitVersion()[2];
             var getBaiduFile = getBaiduVersion(getGitTag);
 
+
             var link = new Dictionary<string, string>(){
                {"BaiduNetDisk",getBaiduFile[1]},
                {"BaiduNetDiskRU",getGitAssetRu},
@@ -207,8 +207,8 @@ namespace BndUpdate
                 await DownloadingAsyncFile(lin.Value,lin.Key);
             }
             await ExtractFileAsync();
-            
             DeleteTelemetryFiles();
+            btnGo.Enabled = true;
         }
 
         private static string GetMD5HashFromFile(string fileName)
@@ -244,8 +244,6 @@ namespace BndUpdate
             {
                 format.Remove("BaiduNetDiskRU");
             }
-            btnGo.Enabled = false;
-            btnCancel.Enabled = false;
             progressBar1.Style = ProgressBarStyle.Marquee;
             toolStripStatusLabel1.Text = "Unpacking . . .";
 
@@ -253,8 +251,6 @@ namespace BndUpdate
             {
                 await Unzip(i.Key, i.Value);
             }
-            btnGo.Enabled = true;
-            btnCancel.Enabled = true;
             progressBar1.Style = ProgressBarStyle.Blocks;
             toolStripStatusLabel1.Text = "Waiting for user input . . ";
         }
@@ -310,29 +306,109 @@ namespace BndUpdate
         private void Form1_Load(object sender, EventArgs e)
         {
 
-            InitDirectory();
-            var connection = IsAvailableNetworkActive();
-            if (!connection)
-            {
-                toolStripStatusLabel1.Text = "Not connection!";
-                btnGo.Enabled = false;
+            //InitDirectory();
+            //var connection = IsAvailableNetworkActive();
+            //if (!connection)
+            //{
+            //    toolStripStatusLabel1.Text = "Not connection!";
+            //    btnGo.Enabled = false;
 
-            }else
-            {
-                if (!File.Exists("../BaiduNetdisk.exe"))
-                {
+            //}else
+            //{
+            //    if (!File.Exists("../BaiduNetdisk.exe"))
+            //    {
 
-                    MessageBox.Show("BaiduNetdisk.exe not found ", "Error 404", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    System.Environment.Exit(0);
-                }
-                Compare(getGitVersion()[0]);
-            }
-            if (IsDirectoryEmpty())
-            {
-                btnClearCache.Enabled = false;
-            }
-
+            //        MessageBox.Show("BaiduNetdisk.exe not found ", "Error 404", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            //        System.Environment.Exit(0);
+            //    }
+            //    Compare(getGitVersion()[0]);
+            //}
+            //if (IsDirectoryEmpty())
+            //{
+            //    btnClearCache.Enabled = false;
+            //}
+            GetFileSum();
         }
+
+
+        static void GetFileSum()
+        {
+            
+            foreach(int file in Enum.GetValues(typeof(BND)))
+            {
+                string _file = Enum.GetName(typeof(BND), file);
+                if (!File.Exists($"{tempPath}//"+_file)) {
+                    MessageBox.Show("1");
+                    return;
+                };
+            }
+
+            string msg = GetMD5HashFromFile(@"c:\Users\zoe\AppData\Local\Temp\BND_MOD\BaiduNetDisk");
+            string msg1 = GetMD5HashFromFile(@"c:\Users\zoe\AppData\Local\Temp\BND_MOD\BaiduNetDiskEn");
+            string msg2 = GetMD5HashFromFile(@"c:\Users\zoe\AppData\Local\Temp\BND_MOD\BaiduNetDiskRU");
+            //HashSum hashSum = new HashSum();
+            //hashSum.name = new List<string>(2) { "1", "2", "3" };
+            //hashSum.hash = new List<string>(2) { msg, msg1, msg2 };
+
+            //Setting setting = new Setting
+            //{
+            //    Title = "Bnd",
+            //    Version = "232",
+            //    CreatedDate = DateTime.Now.ToString("dd MMM yyyy HH:mm"),
+            //    Hashsum = hashSum
+            //};
+            //var data = JsonConvert.SerializeObject(setting, Formatting.Indented);
+            string alldata = File.ReadAllText($"{tempPath}//System.json");
+            JObject version = JObject.Parse(alldata);
+            // Query Select list all version search Version
+            var bndhash = version["Hashsum"]["hash"][0];
+            var bndhashru = version["Hashsum"]["hash"][1];
+            var bndhashen = version["Hashsum"]["hash"][2];
+            DateTime createdDate = Convert.ToDateTime(version["CreatedDate"]);
+            DateTime dt = Convert.ToDateTime(DateTime.Now.ToString("MM/dd/yyyy HH:mm"));
+            //var shortDateTime = createdDate.ToShortTimeString().Remove(,2);
+            int hourSave = dt.Hour;
+            int hourCurrent = createdDate.Hour;
+
+            int hourRes = hourCurrent - hourSave;
+            if(hourRes <= 1 && hourRes < 0 || hourRes >=1 )
+            {
+                MessageBox.Show(msg1);
+            }
+        }
+
+
+        static void GenerateConfig()
+        {
+
+            foreach (int file in Enum.GetValues(typeof(BND)))
+            {
+                string _file = Enum.GetName(typeof(BND), file);
+                if (!File.Exists($"{tempPath}//" + _file))
+                {
+                    MessageBox.Show("1");
+                    return;
+                };
+            }
+
+            string msg = GetMD5HashFromFile(@"c:\Users\zoe\AppData\Local\Temp\BND_MOD\BaiduNetDisk");
+            string msg1 = GetMD5HashFromFile(@"c:\Users\zoe\AppData\Local\Temp\BND_MOD\BaiduNetDiskEn");
+            string msg2 = GetMD5HashFromFile(@"c:\Users\zoe\AppData\Local\Temp\BND_MOD\BaiduNetDiskRU");
+            //HashSum hashSum = new HashSum();
+            //hashSum.name = new List<string>(2) { "1", "2", "3" };
+            //hashSum.hash = new List<string>(2) { msg, msg1, msg2 };
+
+            //Setting setting = new Setting
+            //{
+            //    Title = "Bnd",
+            //    Version = "232",
+            //    CreatedDate = DateTime.Now.ToString("dd MMM yyyy HH:mm"),
+            //    Hashsum = hashSum
+            //};
+            //var data = JsonConvert.SerializeObject(setting, Formatting.Indented);
+            string alldata = File.ReadAllText($"{tempPath}//System.json");
+        }
+
         private void DeleteTelemetryFiles()
         {
             List<string> delFiles = new List<string>()
@@ -374,7 +450,7 @@ namespace BndUpdate
         }
         async Task Unzip(string name, SevenZipFormat sevenZipFormat)
         {
-            string filePath = @".//Temp//" + name;
+            string filePath = $"{tempPath}//" + name;
             FileInfo file = new FileInfo(filePath);
             await Task.Run(() =>
             {
@@ -403,10 +479,11 @@ namespace BndUpdate
 
         private void btnGo_Click(object sender, EventArgs e)
         {
-
+            btnGo.Enabled = false;
             TerminateProcess("YunDetectService");
             TerminateProcess("BaiduNetdisk");
-            GetAllUrl();
+            _ = GetAllUrl();
+ 
         }
 
         public static bool IsAvailableNetworkActive()
@@ -430,20 +507,20 @@ namespace BndUpdate
         }
         private void InitDirectory()
         {
-            if (!Directory.Exists("Temp"))
+            if (!Directory.Exists(tempPath))
             {
-                Directory.CreateDirectory("Temp");
+                Directory.CreateDirectory(tempPath);
             }
         }
         private void btnClearCache_Click(object sender, EventArgs e)
         {
-            DirectoryInfo directoryInfo = new DirectoryInfo("Temp");
+            DirectoryInfo directoryInfo = new DirectoryInfo(tempPath);
 
             foreach(FileInfo file in directoryInfo.GetFiles())
             {
                 file.Delete();
             }
-            toolStripStatusLabel1.Text = "Success!";
+            toolStripStatusLabel1.Text = "Clear Success!";
             btnClearCache.Enabled = false;
         }
 
