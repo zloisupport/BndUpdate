@@ -65,9 +65,6 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AdsJumboWinForm, Version=1.0.0.0, Culture=neutral, PublicKeyToken=d4c9423ef164f081, processorArchitecture=MSIL">
-      <HintPath>..\packages\AdsJumbo.WinForm.WPF.1.5.0\lib\net462\AdsJumboWinForm.dll</HintPath>
-    </Reference>
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -98,6 +95,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Setting.cs" />
+    <Compile Include="Timeout.cs" />
     <Compile Include="UpdateForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -133,9 +131,7 @@
     <None Include="Resources\header.png" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="CloseButton.png" />
     <Content Include="Icon.ico" />
-    <Content Include="VisualStudioToolsManifest.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\SevenZipExtractor.1.0.17\build\SevenZipExtractor.targets" Condition="Exists('..\packages\SevenZipExtractor.1.0.17\build\SevenZipExtractor.targets')" />

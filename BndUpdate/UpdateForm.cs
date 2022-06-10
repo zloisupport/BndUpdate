@@ -21,8 +21,6 @@ namespace BndUpdate
         public UpdateForm()
         {
             InitializeComponent();
-           // bannerAds1.ShowAd(320, 50, "tra9blhyt318");
-            //interstitialAd1.ShowInterstitialAd("tra9blhyt318");
         }
         private static readonly string tempPath = Path.GetTempPath() + "BND_MOD";
         private static string guanjiaUrl = "https://pan.baidu.com/disk/cmsdata?platform=guanjia";
@@ -37,6 +35,8 @@ namespace BndUpdate
 
         private void btnCancel_Click(object sender, EventArgs e)
         {
+
+            _ = CloseForm();
             Application.Exit();
         }
 
@@ -81,8 +81,9 @@ namespace BndUpdate
 
             }
 
-            //if (checkingFile(tempPath+ "//Config//gitRelease.json"))
-              line = new StreamReader(tempPath+ "//Config//gitRelease.json").ReadToEnd();
+            if (!checkingFile(tempPath + "//Config//gitRelease.json"))
+                Application.Exit();
+                line = File.ReadAllText(tempPath + "//Config//gitRelease.json");
 
 
             // line = new StreamReader("release.json").ReadToEnd();
@@ -104,7 +105,7 @@ namespace BndUpdate
         {
             dynamic parsedJson =  JsonConvert.DeserializeObject(line);
             var data = JsonConvert.SerializeObject(parsedJson, Formatting.Indented);
-            Directory.CreateDirectory($"{tempPath}//Config");
+            File.Delete($@"{name}");
             File.WriteAllText($@"{name}", data);
         }
 
@@ -307,22 +308,24 @@ namespace BndUpdate
         private void Form1_Load(object sender, EventArgs e)
         {
 
-            InitDirectory();
+            
             var connection = IsAvailableNetworkActive();
             if (!connection)
             {
-                toolStripStatusLabel1.Text = "Not connection!";
-                btnGo.Enabled = false;
+                MessageBox.Show("Not connection", "Warning! ", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                System.Environment.Exit(0);
 
             }
             else
             {
+               
                 if (!File.Exists("../BaiduNetdisk.exe"))
                 {
 
                     MessageBox.Show("File : BaiduNetdisk.exe not found ", "Warning! ", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     System.Environment.Exit(0);
                 }
+                InitDirectory();
                 Compare(getGitVersion()[0]);
             }
             if (IsDirectoryEmpty())
@@ -378,16 +381,30 @@ namespace BndUpdate
             }
 
             return false;
-        }       
+        }
+
+        private Task GenerateTimeOutFile()
+        {
+            if (IsAvailableNetworkActive())
+            {
+                Timeout timeout = new Timeout();
+                timeout.LatestConnection = DateTime.Now.ToString("MM/dd/yyyy HH:mm");
+                var data = JsonConvert.SerializeObject(timeout, Formatting.Indented);
+                File.WriteAllText($"{tempPath}//Config//TimeOut.json", data);
+            }
+
+            return Task.CompletedTask;
+        }
+
         private static bool ConnectionTimeout()
         {
-            if(!File.Exists($"{tempPath}//System.json")){
+            if(!File.Exists($"{tempPath}//Config//TimeOut.json")){
                 return true;
             }
-            string alldata = File.ReadAllText($"{tempPath}//System.json");
+            string alldata = File.ReadAllText($"{tempPath}//Config//TimeOut.json");
             JObject version = JObject.Parse(alldata);
 
-            DateTime createdDate = Convert.ToDateTime(version["CreatedDate"]);
+            DateTime createdDate = Convert.ToDateTime(version["LatestConnection"]);
             DateTime dt = Convert.ToDateTime(DateTime.Now.ToString("MM/dd/yyyy HH:mm"));
             int hourSave = dt.Hour;
             int hourCurrent = createdDate.Hour;
@@ -536,11 +553,13 @@ namespace BndUpdate
         }
         private void btnClearCache_Click(object sender, EventArgs e)
         {
-            DirectoryInfo directoryInfo = new DirectoryInfo(tempPath);
-
-            foreach(FileInfo file in directoryInfo.GetFiles())
-            {
-                file.Delete();
+            DirectoryInfo directoryInfo = new DirectoryInfo(tempPath+"//");
+             if(Directory.Exists(tempPath)){
+                foreach (FileInfo file in directoryInfo.GetFiles())
+                {
+                    MessageBox.Show(file.ToString());
+                    file.Delete();
+                }
             }
             toolStripStatusLabel1.Text = "Clear Success!";
             btnClearCache.Enabled = false;
@@ -551,6 +570,16 @@ namespace BndUpdate
             if (Directory.Exists(path))
                 return !Directory.EnumerateFileSystemEntries(path).Any();
             return true;
+        }
+
+        async Task CloseForm()
+        {
+           await GenerateTimeOutFile();
+        }
+
+        private void UpdateForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            _ = CloseForm();
         }
     }
 }

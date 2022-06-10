@@ -46,7 +46,6 @@ namespace BndUpdate
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.lblAbout = new System.Windows.Forms.Label();
             this.btnClearCache = new System.Windows.Forms.Button();
-            this.bannerAds1 = new AdsJumboWinForm.BannerAds();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -58,10 +57,11 @@ namespace BndUpdate
             // groupBox1
             // 
             this.groupBox1.Controls.Add(this.listBox1);
+            this.groupBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.groupBox1.ForeColor = System.Drawing.SystemColors.HotTrack;
             this.groupBox1.Location = new System.Drawing.Point(6, 78);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(180, 62);
+            this.groupBox1.Size = new System.Drawing.Size(180, 88);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Your product version";
@@ -69,19 +69,22 @@ namespace BndUpdate
             // listBox1
             // 
             this.listBox1.Enabled = false;
+            this.listBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.listBox1.FormattingEnabled = true;
+            this.listBox1.ItemHeight = 20;
             this.listBox1.Location = new System.Drawing.Point(6, 18);
             this.listBox1.Name = "listBox1";
-            this.listBox1.Size = new System.Drawing.Size(168, 30);
+            this.listBox1.Size = new System.Drawing.Size(168, 64);
             this.listBox1.TabIndex = 0;
             // 
             // groupBox2
             // 
             this.groupBox2.Controls.Add(this.listBox2);
+            this.groupBox2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.groupBox2.ForeColor = System.Drawing.SystemColors.HotTrack;
-            this.groupBox2.Location = new System.Drawing.Point(191, 78);
+            this.groupBox2.Location = new System.Drawing.Point(192, 78);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(180, 62);
+            this.groupBox2.Size = new System.Drawing.Size(228, 88);
             this.groupBox2.TabIndex = 1;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "New product version";
@@ -89,10 +92,12 @@ namespace BndUpdate
             // listBox2
             // 
             this.listBox2.Enabled = false;
+            this.listBox2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.listBox2.FormattingEnabled = true;
+            this.listBox2.ItemHeight = 20;
             this.listBox2.Location = new System.Drawing.Point(6, 18);
             this.listBox2.Name = "listBox2";
-            this.listBox2.Size = new System.Drawing.Size(168, 30);
+            this.listBox2.Size = new System.Drawing.Size(216, 64);
             this.listBox2.TabIndex = 1;
             // 
             // statusStrip1
@@ -101,34 +106,36 @@ namespace BndUpdate
             this.toolStripStatusLabel1,
             this.toolStripStatusLabel2,
             this.toolStripStatusLabel3});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 305);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 308);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(378, 22);
+            this.statusStrip1.Size = new System.Drawing.Size(432, 26);
             this.statusStrip1.TabIndex = 2;
             this.statusStrip1.Text = "statusStrip1";
             // 
             // toolStripStatusLabel1
             // 
+            this.toolStripStatusLabel1.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
-            this.toolStripStatusLabel1.Size = new System.Drawing.Size(137, 17);
+            this.toolStripStatusLabel1.Size = new System.Drawing.Size(179, 21);
             this.toolStripStatusLabel1.Text = "Waiting for user input . . ";
             // 
             // toolStripStatusLabel2
             // 
             this.toolStripStatusLabel2.Name = "toolStripStatusLabel2";
-            this.toolStripStatusLabel2.Size = new System.Drawing.Size(0, 17);
+            this.toolStripStatusLabel2.Size = new System.Drawing.Size(0, 21);
             // 
             // toolStripStatusLabel3
             // 
             this.toolStripStatusLabel3.Name = "toolStripStatusLabel3";
-            this.toolStripStatusLabel3.Size = new System.Drawing.Size(0, 17);
+            this.toolStripStatusLabel3.Size = new System.Drawing.Size(0, 21);
             // 
             // btnGo
             // 
+            this.btnGo.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.btnGo.ForeColor = System.Drawing.Color.Teal;
-            this.btnGo.Location = new System.Drawing.Point(6, 211);
+            this.btnGo.Location = new System.Drawing.Point(6, 260);
             this.btnGo.Name = "btnGo";
-            this.btnGo.Size = new System.Drawing.Size(180, 31);
+            this.btnGo.Size = new System.Drawing.Size(180, 49);
             this.btnGo.TabIndex = 3;
             this.btnGo.Text = "Go";
             this.btnGo.UseVisualStyleBackColor = true;
@@ -136,9 +143,10 @@ namespace BndUpdate
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(197, 211);
+            this.btnCancel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.btnCancel.Location = new System.Drawing.Point(198, 260);
             this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(180, 31);
+            this.btnCancel.Size = new System.Drawing.Size(222, 49);
             this.btnCancel.TabIndex = 4;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
@@ -148,10 +156,11 @@ namespace BndUpdate
             // 
             this.groupBox3.Controls.Add(this.rbtnEng);
             this.groupBox3.Controls.Add(this.rbtnRus);
+            this.groupBox3.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.groupBox3.ForeColor = System.Drawing.SystemColors.HotTrack;
-            this.groupBox3.Location = new System.Drawing.Point(6, 146);
+            this.groupBox3.Location = new System.Drawing.Point(6, 172);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(180, 42);
+            this.groupBox3.Size = new System.Drawing.Size(180, 59);
             this.groupBox3.TabIndex = 6;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Language";
@@ -160,9 +169,10 @@ namespace BndUpdate
             // 
             this.rbtnEng.AutoSize = true;
             this.rbtnEng.Checked = true;
-            this.rbtnEng.Location = new System.Drawing.Point(72, 19);
+            this.rbtnEng.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.rbtnEng.Location = new System.Drawing.Point(99, 24);
             this.rbtnEng.Name = "rbtnEng";
-            this.rbtnEng.Size = new System.Drawing.Size(44, 17);
+            this.rbtnEng.Size = new System.Drawing.Size(56, 24);
             this.rbtnEng.TabIndex = 1;
             this.rbtnEng.TabStop = true;
             this.rbtnEng.Text = "Eng";
@@ -171,18 +181,19 @@ namespace BndUpdate
             // rbtnRus
             // 
             this.rbtnRus.AutoSize = true;
-            this.rbtnRus.Location = new System.Drawing.Point(6, 19);
+            this.rbtnRus.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.rbtnRus.Location = new System.Drawing.Point(17, 24);
             this.rbtnRus.Name = "rbtnRus";
-            this.rbtnRus.Size = new System.Drawing.Size(44, 17);
+            this.rbtnRus.Size = new System.Drawing.Size(56, 24);
             this.rbtnRus.TabIndex = 0;
             this.rbtnRus.Text = "Rus";
             this.rbtnRus.UseVisualStyleBackColor = true;
             // 
             // progressBar1
             // 
-            this.progressBar1.Location = new System.Drawing.Point(6, 194);
+            this.progressBar1.Location = new System.Drawing.Point(6, 237);
             this.progressBar1.Name = "progressBar1";
-            this.progressBar1.Size = new System.Drawing.Size(369, 11);
+            this.progressBar1.Size = new System.Drawing.Size(414, 17);
             this.progressBar1.TabIndex = 2;
             // 
             // lblAbout
@@ -195,33 +206,22 @@ namespace BndUpdate
             // 
             // btnClearCache
             // 
+            this.btnClearCache.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.btnClearCache.ForeColor = System.Drawing.Color.CadetBlue;
-            this.btnClearCache.Location = new System.Drawing.Point(197, 157);
+            this.btnClearCache.Location = new System.Drawing.Point(192, 178);
             this.btnClearCache.Name = "btnClearCache";
-            this.btnClearCache.Size = new System.Drawing.Size(174, 31);
+            this.btnClearCache.Size = new System.Drawing.Size(228, 42);
             this.btnClearCache.TabIndex = 8;
             this.btnClearCache.Text = "Clear cache";
             this.btnClearCache.UseVisualStyleBackColor = true;
             this.btnClearCache.Click += new System.EventHandler(this.btnClearCache_Click);
-            // 
-            // bannerAds1
-            // 
-            this.bannerAds1.ApplicationId = "tra9blhyt318";
-            this.bannerAds1.BackColor = System.Drawing.Color.White;
-            this.bannerAds1.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.bannerAds1.HeightAd = 320;
-            this.bannerAds1.Location = new System.Drawing.Point(35, 248);
-            this.bannerAds1.Name = "bannerAds1";
-            this.bannerAds1.Size = new System.Drawing.Size(320, 50);
-            this.bannerAds1.TabIndex = 9;
-            this.bannerAds1.WidthAd = 50;
             // 
             // pictureBox1
             // 
             this.pictureBox1.Image = global::BndUpdate.Properties.Resources.header;
             this.pictureBox1.Location = new System.Drawing.Point(0, 0);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(383, 69);
+            this.pictureBox1.Size = new System.Drawing.Size(433, 69);
             this.pictureBox1.TabIndex = 5;
             this.pictureBox1.TabStop = false;
             // 
@@ -229,8 +229,7 @@ namespace BndUpdate
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(378, 327);
-            this.Controls.Add(this.bannerAds1);
+            this.ClientSize = new System.Drawing.Size(432, 334);
             this.Controls.Add(this.btnClearCache);
             this.Controls.Add(this.progressBar1);
             this.Controls.Add(this.lblAbout);
@@ -246,6 +245,7 @@ namespace BndUpdate
             this.MaximizeBox = false;
             this.Name = "UpdateForm";
             this.Text = "BND mod Update";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.UpdateForm_FormClosed);
             this.Load += new System.EventHandler(this.Form1_Load);
             this.groupBox1.ResumeLayout(false);
             this.groupBox2.ResumeLayout(false);
@@ -278,8 +278,7 @@ namespace BndUpdate
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel3;
         private System.Windows.Forms.Label lblAbout;
         private System.Windows.Forms.Button btnClearCache;
-        private AdsJumboWinForm.BannerAds bannerAds1;
-        private AdsJumboWinForm.InterstitialAd interstitialAd1;
+      
     }
 }
 
