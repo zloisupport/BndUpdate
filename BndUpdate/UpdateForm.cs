@@ -193,7 +193,7 @@ namespace BndUpdate
             var getLocale = getGitVersion()[2];
             var getBaiduFile = getBaiduVersion(getGitTag);
 
-           string tempFileVerision= GetTempFileVersion(); 
+           string tempFileVerision=GetTempFileVersion(); 
 
             if (tempFileVerision == getGitTag)
             {
@@ -321,7 +321,6 @@ namespace BndUpdate
                
                 if (!File.Exists("../BaiduNetdisk.exe"))
                 {
-
                     MessageBox.Show("File : BaiduNetdisk.exe not found ", "Warning! ", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     System.Environment.Exit(0);
                 }
@@ -337,10 +336,13 @@ namespace BndUpdate
         }
         private static string GetTempFileVersion()
         {
-            string alldata = File.ReadAllText($"{tempPath}//System.json");
-            JObject data = JObject.Parse(alldata);
-            string version = (string)data["Version"];
-            return version;
+            if (File.Exists($"{tempPath}//System.json")) { 
+                string alldata = File.ReadAllText($"{tempPath}//System.json");
+                JObject data = JObject.Parse(alldata);
+                string version = (string)data["Version"];
+                return version;
+            }
+            return null;
         }
         private static bool GetFilesHash()
         {
