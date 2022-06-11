@@ -97,6 +97,7 @@ namespace BndUpdate
             gitData.Add(tagName);
             gitData.Add((string)categories["assets"][0]["browser_download_url"]);
             gitData.Add((string)categories["assets"][1]["browser_download_url"]);
+            gitData.Add((string)categories["assets"][0]["size"]);
             return gitData;
         }
 
@@ -130,15 +131,18 @@ namespace BndUpdate
             string baiduServerVersion1 = string.Empty;
             int x = 0;
             string urlFile = null;
+            string size;
             foreach (var item in jsonVerions)
             {
                 baiduServerVersion = Regex.Match(item, @"\d.*").Value;
                 if (baiduServerVersion == Version)
                 {
                     urlFile = (string)version["list"][x]["url"];
+                    size = (string)version["list"][x]["size"];
                     baiduServerVersion1 = baiduServerVersion;
                     baiduData.Add(baiduServerVersion1);
                     baiduData.Add(urlFile);
+                    baiduData.Add(size);
                 }
                 x++;
             }
@@ -192,8 +196,10 @@ namespace BndUpdate
             var getGitAssetRu = getGitVersion()[2];
             var getLocale = getGitVersion()[2];
             var getBaiduFile = getBaiduVersion(getGitTag);
+            long getBaiduFileSize =Convert.ToInt64(getBaiduFile[2].Replace("M",string.Empty));
+            long getGitFileSize = (long)ConvertBytesToMegabytes(Convert.ToInt64(getGitVersion()[3]));
 
-           string tempFileVerision=GetTempFileVersion(); 
+            string tempFileVerision= GetTempFileVersion(); 
 
             if (tempFileVerision == getGitTag)
             {
@@ -204,10 +210,28 @@ namespace BndUpdate
                {"BaiduNetDiskRU",getGitAssetRu},
                {"BaiduNetDiskEn",getGitAssetEn}
             };
+            long fileSizeibMbs;
             foreach (var lin in link)
             {
-             if (!File.Exists($"{tempPath}//{lin.Key}"))
-                await DownloadingAsyncFile(lin.Value,lin.Key);
+
+
+                if (!File.Exists($"{tempPath}//{lin.Key}")) {
+                   
+                  await DownloadingAsyncFile(lin.Value, lin.Key);
+                }
+                else  ///10654490  
+                {
+                    FileInfo fileinf = new FileInfo($"{tempPath}//{lin.Key}");
+
+                    fileSizeibMbs = (long)ConvertBytesToMegabytes(Convert.ToInt64(fileinf.Length));
+                  
+                    if (lin.Key == "BaiduNetDisk" && fileSizeibMbs < getBaiduFileSize || fileSizeibMbs < getGitFileSize)
+                    {
+                        
+                      await DownloadingAsyncFile(lin.Value, lin.Key);
+                    }
+                }
+
             }
             await ExtractFileAsync();
             DeleteTelemetryFiles();
@@ -559,7 +583,7 @@ namespace BndUpdate
              if(Directory.Exists(tempPath)){
                 foreach (FileInfo file in directoryInfo.GetFiles())
                 {
-                    MessageBox.Show(file.ToString());
+               
                     file.Delete();
                 }
             }
@@ -569,8 +593,8 @@ namespace BndUpdate
 
         public bool IsDirectoryEmpty(string path = "Temp")
         {
-            if (Directory.Exists(path))
-                return !Directory.EnumerateFileSystemEntries(path).Any();
+            if (Directory.Exists(tempPath))
+                return !Directory.EnumerateFileSystemEntries(tempPath).Any();
             return true;
         }
 
