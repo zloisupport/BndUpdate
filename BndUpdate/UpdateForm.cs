@@ -196,7 +196,7 @@ namespace BndUpdate
             var getGitAssetRu = getGitVersion()[2];
             var getLocale = getGitVersion()[2];
             var getBaiduFile = getBaiduVersion(getGitTag);
-            long getBaiduFileSize =Convert.ToInt64(getBaiduFile[2].Replace("M",string.Empty));
+            long getBaiduFileSize =Convert.ToInt64(getBaiduFile[2].Replace("M",string.Empty)) - 2;
             long getGitFileSize = (long)ConvertBytesToMegabytes(Convert.ToInt64(getGitVersion()[3]));
 
             string tempFileVerision= GetTempFileVersion(); 
@@ -219,7 +219,7 @@ namespace BndUpdate
                    
                   await DownloadingAsyncFile(lin.Value, lin.Key);
                 }
-                else  ///10654490  
+                else   
                 {
                     FileInfo fileinf = new FileInfo($"{tempPath}//{lin.Key}");
 
@@ -350,11 +350,12 @@ namespace BndUpdate
                 }
                 InitDirectory();
                 Compare(getGitVersion()[0]);
+                if (IsDirectoryEmpty())
+                {
+                    btnClearCache.Enabled = false;
+                }
             }
-            if (IsDirectoryEmpty())
-            {
-                btnClearCache.Enabled = false;
-            }
+
             // GenerateHashFile("test version");
 
         }
@@ -579,7 +580,7 @@ namespace BndUpdate
         }
         private void btnClearCache_Click(object sender, EventArgs e)
         {
-            DirectoryInfo directoryInfo = new DirectoryInfo(tempPath+"//");
+            DirectoryInfo directoryInfo = new DirectoryInfo(tempPath);
              if(Directory.Exists(tempPath)){
                 foreach (FileInfo file in directoryInfo.GetFiles())
                 {
@@ -591,11 +592,9 @@ namespace BndUpdate
             btnClearCache.Enabled = false;
         }
 
-        public bool IsDirectoryEmpty(string path = "Temp")
+        public bool IsDirectoryEmpty()
         {
-            if (Directory.Exists(tempPath))
-                return !Directory.EnumerateFileSystemEntries(tempPath).Any();
-            return true;
+          return !Directory.EnumerateFileSystemEntries(tempPath).Any();
         }
 
         async Task CloseForm()
