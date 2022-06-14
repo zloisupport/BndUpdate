@@ -144,7 +144,7 @@ namespace BndUpdate
             // btnCancel
             // 
             this.btnCancel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.btnCancel.Location = new System.Drawing.Point(198, 260);
+            this.btnCancel.Location = new System.Drawing.Point(192, 260);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(222, 49);
             this.btnCancel.TabIndex = 4;
@@ -208,9 +208,9 @@ namespace BndUpdate
             // 
             this.btnClearCache.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.btnClearCache.ForeColor = System.Drawing.Color.CadetBlue;
-            this.btnClearCache.Location = new System.Drawing.Point(192, 178);
+            this.btnClearCache.Location = new System.Drawing.Point(192, 182);
             this.btnClearCache.Name = "btnClearCache";
-            this.btnClearCache.Size = new System.Drawing.Size(228, 42);
+            this.btnClearCache.Size = new System.Drawing.Size(228, 49);
             this.btnClearCache.TabIndex = 8;
             this.btnClearCache.Text = "Clear cache";
             this.btnClearCache.UseVisualStyleBackColor = true;

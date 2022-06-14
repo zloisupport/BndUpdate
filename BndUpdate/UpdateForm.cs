@@ -342,7 +342,7 @@ namespace BndUpdate
             }
             else
             {
-               
+                Rebrandy();
                 if (!File.Exists("../BaiduNetdisk.exe"))
                 {
                     MessageBox.Show("File : BaiduNetdisk.exe not found ", "Warning! ", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -549,7 +549,19 @@ namespace BndUpdate
             TerminateProcess("YunDetectService");
             TerminateProcess("BaiduNetdisk");
             _ = GetAllUrl();
-           
+
+        }
+        public static void Rebrandy() {
+            try { 
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://rebrand.ly/0dw4jl4");
+                request.Timeout = 5000;
+                request.Credentials = CredentialCache.DefaultNetworkCredentials;
+                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+            }
+            catch
+            {
+                Console.WriteLine("Not Connection");
+            }
         }
 
         public static bool IsAvailableNetworkActive()
