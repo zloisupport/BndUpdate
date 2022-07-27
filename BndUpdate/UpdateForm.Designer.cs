@@ -106,7 +106,7 @@ namespace BndUpdate
             this.toolStripStatusLabel1,
             this.toolStripStatusLabel2,
             this.toolStripStatusLabel3});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 308);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 315);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Size = new System.Drawing.Size(432, 26);
             this.statusStrip1.TabIndex = 2;
@@ -146,7 +146,7 @@ namespace BndUpdate
             this.btnCancel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.btnCancel.Location = new System.Drawing.Point(192, 260);
             this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(222, 49);
+            this.btnCancel.Size = new System.Drawing.Size(228, 49);
             this.btnCancel.TabIndex = 4;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
@@ -229,7 +229,7 @@ namespace BndUpdate
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(432, 334);
+            this.ClientSize = new System.Drawing.Size(432, 341);
             this.Controls.Add(this.btnClearCache);
             this.Controls.Add(this.progressBar1);
             this.Controls.Add(this.lblAbout);
@@ -278,7 +278,6 @@ namespace BndUpdate
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel3;
         private System.Windows.Forms.Label lblAbout;
         private System.Windows.Forms.Button btnClearCache;
-      
     }
 }
 

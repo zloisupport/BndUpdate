@@ -336,8 +336,19 @@ namespace BndUpdate
             var connection = IsAvailableNetworkActive();
             if (!connection)
             {
-                MessageBox.Show("Not connection", "Warning! ", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                System.Environment.Exit(0);
+                toolStripStatusLabel1.ForeColor = System.Drawing.Color.Red;
+                toolStripStatusLabel1.Text = "Not connection";
+               // logList.Text = $"{DateTime.Now.ToString("HH:mm")} Not connected to the internet";
+                btnGo.Enabled = false;
+                btnClearCache.Enabled = false;
+                btnCancel.Text = "Exit";
+                btnCancel.ForeColor = System.Drawing.Color.Green;
+                rbtnEng.Enabled = false;
+                rbtnRus.Enabled = false;
+                listBox1.Enabled = false;
+                listBox2.Enabled = false;
+                //MessageBox.Show("Not connection", "Warning! ", MessageBoxButtons.OK, MessageBoxIcon.Error);
+               // System.Environment.Exit(0);
 
             }
             else
@@ -345,8 +356,20 @@ namespace BndUpdate
                 Rebrandy();
                 if (!File.Exists("../BaiduNetdisk.exe"))
                 {
-                    MessageBox.Show("File : BaiduNetdisk.exe not found ", "Warning! ", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    System.Environment.Exit(0);
+                    toolStripStatusLabel1.ForeColor = System.Drawing.Color.Red;
+                    toolStripStatusLabel1.Text =$"File : BaiduNetdisk.exe not found ";
+                    btnGo.Enabled = false;
+                    btnClearCache.Enabled = false;
+                    btnCancel.Text = "Exit";
+                    btnCancel.ForeColor = System.Drawing.Color.Green;
+                    rbtnEng.Enabled = false;
+                    rbtnRus.Enabled = false;
+                    listBox1.Enabled = false;
+                    listBox2.Enabled = false;
+                  //  logList.Items.Insert(0,"File : BaiduNetdisk.exe not found ");
+                    return;
+                    //MessageBox.Show("File : BaiduNetdisk.exe not found ", "Warning! ", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    //System.Environment.Exit(0);
                 }
                 InitDirectory();
                 Compare(getGitVersion()[0]);
@@ -420,7 +443,7 @@ namespace BndUpdate
                 File.WriteAllText($"{tempPath}//Config//TimeOut.json", data);
             }
 
-            return Task.CompletedTask;
+            return Task.FromResult<object>(null);
         }
 
         private static bool ConnectionTimeout()
@@ -552,16 +575,16 @@ namespace BndUpdate
 
         }
         public static void Rebrandy() {
-            try { 
+                ServicePointManager.Expect100Continue = true;
+                ServicePointManager.DefaultConnectionLimit = 9999;
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3 | SecurityProtocolType.Tls;
+                ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://rebrand.ly/0dw4jl4");
                 request.Timeout = 5000;
-                request.Credentials = CredentialCache.DefaultNetworkCredentials;
-                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-            }
-            catch
-            {
-                Console.WriteLine("Not Connection");
-            }
+                request.UserAgent = "Mozilla / 5.0(Windows NT 10.0; Win64; x64) AppleWebKit / 537.36(KHTML, like Gecko) Chrome / 70.0.3538.77 Safari / 537.36";
+                request.AutomaticDecompression = DecompressionMethods.GZip;
+                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                using (Stream stream = response.GetResponseStream());
         }
 
         public static bool IsAvailableNetworkActive()
