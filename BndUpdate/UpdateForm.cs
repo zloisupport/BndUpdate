@@ -16,16 +16,17 @@ using System.Windows.Forms;
 
 namespace BndUpdate
 {
-    public partial class UpdateForm : Form
+    public partial class UpdateForm : Form 
     {
         public UpdateForm()
         {
             InitializeComponent();
+            IsAvailableNetworkActive();
         }
         private static readonly string tempPath = Path.GetTempPath() + "BND_MOD";
         private static string guanjiaUrl = "https://pan.baidu.com/disk/cmsdata?platform=guanjia";
         private static readonly string gitUrl = @"https://api.github.com/repos/zloisupport/BaiduNetDiskTranslation/releases";
-
+        private static bool statusNetwork = false;
         enum BND
         {
             BaiduNetDisk,
@@ -170,6 +171,7 @@ namespace BndUpdate
 
             using (WebClient client = new WebClient())
             {
+               
                 client.DownloadFileCompleted += (s, e) =>
                 {
                     progressBar1.Value = 0;
@@ -188,6 +190,28 @@ namespace BndUpdate
             }
         }
 
+        private bool GetResponseCode(string link)
+        {
+            try
+            {
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(link);
+                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+              
+                if (response.StatusCode == HttpStatusCode.OK)
+                {
+                    MessageBox.Show(response.StatusCode.ToString());
+                    return true;
+                }
+              
+            }
+            catch
+            {
+                return false;
+            }
+            return true;
+        
+        }
+
         private async Task GetAllUrl()
         {
             string getInstFile = getFileVerison();
@@ -196,10 +220,10 @@ namespace BndUpdate
             var getGitAssetRu = getGitVersion()[2];
             var getLocale = getGitVersion()[2];
             var getBaiduFile = getBaiduVersion(getGitTag);
-            long getBaiduFileSize =Convert.ToInt64(getBaiduFile[2].Replace("M",string.Empty)) - 2;
+            long getBaiduFileSize = Convert.ToInt64(getBaiduFile[2].Replace("M", string.Empty)) - 2;
             long getGitFileSize = (long)ConvertBytesToMegabytes(Convert.ToInt64(getGitVersion()[3]));
 
-            string tempFileVerision= GetTempFileVersion(); 
+            string tempFileVerision = GetTempFileVersion();
 
             if (tempFileVerision == getGitTag)
             {
@@ -215,33 +239,48 @@ namespace BndUpdate
             {
 
 
-                if (!File.Exists($"{tempPath}//{lin.Key}")) {
-                   
-                  await DownloadingAsyncFile(lin.Value, lin.Key);
+                if (!File.Exists($"{tempPath}//{lin.Key}"))
+                {
+
+
+                    if (GetResponseCode(lin.Value))
+                        await DownloadingAsyncFile(lin.Value, lin.Key);
+                    else
+                    {
+                        toolStripStatusLabel1.Text = "Server Error Code:Baidu - 403 Forbidden.";
+                        toolStripStatusLabel1.ForeColor = System.Drawing.Color.Red;
+                        return;
+                    }
+
                 }
-                else   
+                else
                 {
                     FileInfo fileinf = new FileInfo($"{tempPath}//{lin.Key}");
 
                     fileSizeibMbs = (long)ConvertBytesToMegabytes(Convert.ToInt64(fileinf.Length));
-                  
+
                     if (lin.Key == "BaiduNetDisk" && fileSizeibMbs < getBaiduFileSize || fileSizeibMbs < getGitFileSize)
                     {
-                        
-                      await DownloadingAsyncFile(lin.Value, lin.Key);
+                        if (GetResponseCode(lin.Value))
+                            await DownloadingAsyncFile(lin.Value, lin.Key);
+                        else
+                        {
+                            toolStripStatusLabel1.ForeColor = System.Drawing.Color.Red;
+                            toolStripStatusLabel1.Text = "Server Error Code :Git - 403 Forbidden. ";
+                            return;
+                        }
                     }
+
                 }
-
+                await ExtractFileAsync();
+                DeleteTelemetryFiles();
+                GenerateHashFile(getGitTag);
+                btnGo.Enabled = true;
+                listBox1.Items.Clear();
+                listBox1.Items.Insert(0, getGitTag);
+                btnCancel.Text = "Exit";
             }
-            await ExtractFileAsync();
-            DeleteTelemetryFiles();
-            GenerateHashFile(getGitTag);
-            btnGo.Enabled = true;
-            listBox1.Items.Clear();
-            listBox1.Items.Insert(0, getGitTag);
-            btnCancel.Text = "Exit";
         }
-
         private static string GetMD5HashFromFile(string fileName)
         {
             using (var md5 = MD5.Create())
@@ -331,10 +370,7 @@ namespace BndUpdate
 
         private void Form1_Load(object sender, EventArgs e)
         {
-
-            
-            var connection = IsAvailableNetworkActive();
-            if (!connection)
+            if (!statusNetwork)
             {
                 toolStripStatusLabel1.ForeColor = System.Drawing.Color.Red;
                 toolStripStatusLabel1.Text = "Not connection";
@@ -353,7 +389,11 @@ namespace BndUpdate
             }
             else
             {
-                Rebrandy();
+              //  Rebrandy();
+                //MessageBox.Show(Directory.GetCurrentDirectory().ToString());
+                //var path = Directory.GetCurrentDirectory();
+
+                //Environment.CurrentDirectory = path+ "ModUpdate";
                 if (!File.Exists("../BaiduNetdisk.exe"))
                 {
                     toolStripStatusLabel1.ForeColor = System.Drawing.Color.Red;
@@ -435,7 +475,7 @@ namespace BndUpdate
 
         private Task GenerateTimeOutFile()
         {
-            if (IsAvailableNetworkActive())
+            if (statusNetwork)
             {
                 Timeout timeout = new Timeout();
                 timeout.LatestConnection = DateTime.Now.ToString("MM/dd/yyyy HH:mm");
@@ -596,8 +636,10 @@ namespace BndUpdate
                 request.Credentials = CredentialCache.DefaultNetworkCredentials;
                 HttpWebResponse response = (HttpWebResponse)request.GetResponse();
 
-                if (response.StatusCode == HttpStatusCode.OK)
+                if (response.StatusCode == HttpStatusCode.OK) {
+                    statusNetwork = true;
                     return true;
+                }
                 else
                     return false;
             }
