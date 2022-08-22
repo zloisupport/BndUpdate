@@ -199,7 +199,7 @@ namespace BndUpdate
               
                 if (response.StatusCode == HttpStatusCode.OK)
                 {
-                    MessageBox.Show(response.StatusCode.ToString());
+                  
                     return true;
                 }
               
@@ -238,11 +238,11 @@ namespace BndUpdate
             foreach (var lin in link)
             {
 
-
+                MessageBox.Show($"{tempPath}//{lin.Key}");
                 if (!File.Exists($"{tempPath}//{lin.Key}"))
                 {
 
-
+                  
                     if (GetResponseCode(lin.Value))
                         await DownloadingAsyncFile(lin.Value, lin.Key);
                     else
@@ -262,7 +262,10 @@ namespace BndUpdate
                     if (lin.Key == "BaiduNetDisk" && fileSizeibMbs < getBaiduFileSize || fileSizeibMbs < getGitFileSize)
                     {
                         if (GetResponseCode(lin.Value))
+                        {
+                            Console.WriteLine(GetResponseCode(lin.Value).ToString());
                             await DownloadingAsyncFile(lin.Value, lin.Key);
+                        }
                         else
                         {
                             toolStripStatusLabel1.ForeColor = System.Drawing.Color.Red;
@@ -272,14 +275,15 @@ namespace BndUpdate
                     }
 
                 }
-                await ExtractFileAsync();
+            }
+            await ExtractFileAsync();
                 DeleteTelemetryFiles();
                 GenerateHashFile(getGitTag);
                 btnGo.Enabled = true;
                 listBox1.Items.Clear();
                 listBox1.Items.Insert(0, getGitTag);
                 btnCancel.Text = "Exit";
-            }
+
         }
         private static string GetMD5HashFromFile(string fileName)
         {
@@ -353,6 +357,7 @@ namespace BndUpdate
                     listBox2.Items.Insert(0, $"{serverVersion}");
                     listBox1.Items.Insert(0, $"{getInstFile}");
                     //listBox1.Items.Insert(0, $"{getSerFile1}");
+
                     //listBox2.Items.Insert(1, $"{getBaiduFile[1]}");
                     btnGo.Text = "Download";
 
