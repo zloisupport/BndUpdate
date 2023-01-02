@@ -6,27 +6,48 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Security.Cryptography;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace BndUpdate
 {
-    public partial class UpdateForm : Form 
+    public partial class UpdateForm : Form
     {
         public UpdateForm()
         {
             InitializeComponent();
             IsAvailableNetworkActive();
+
+            SystemLanguage systemLanguage = new SystemLanguage();
+
+            if (systemLanguage.getSystemLanguage() == "ru-RU")
+            {
+                Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo("ru-RU");
+            }
+            else
+            {
+                Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo("en-GB");
+            }
         }
         private static readonly string tempPath = Path.GetTempPath() + "BND_MOD";
-        private static string guanjiaUrl = "https://pan.baidu.com/disk/cmsdata?platform=guanjia";
+        private static readonly string guanjiaUrl = "https://pan.baidu.com/disk/cmsdata?platform=guanjia";
         private static readonly string gitUrl = @"https://api.github.com/repos/zloisupport/BaiduNetDiskTranslation/releases";
         private static bool statusNetwork = false;
+
+        private string[] userAgents = {
+            "Mozilla/5.0 (iPad; CPU OS 8_4 like Mac OS X) AppleWebKit/600.1.4 (KHTML, like Gecko) Version/8.0 Mobile/12H143 Safari/600.1.4",
+            "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.157 Safari/537.36",
+            "Mozilla/5.0 (Linux; U; Android 4.0.4; en-us; KFJWA Build/IMM76D) AppleWebKit/537.36 (KHTML, like Gecko) Silk/3.68 like Chrome/39.0.2171.93 Safari/537.36",
+            "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) coc_coc_browser/50.0.125 Chrome/44.0.2403.125 Safari/537.36"
+        };
+
         enum BND
         {
             BaiduNetDisk,
@@ -71,9 +92,10 @@ namespace BndUpdate
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3 | SecurityProtocolType.Tls;
             ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
             var line = "";
+            Random rnd = new Random();
             if (ConnectionTimeout()) {
                  WebClient webClient = new WebClient();
-                 webClient.Headers.Add("user-agent", "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.124 Safari/537.36");
+                 webClient.Headers.Add("user-agent",userAgents[rnd.Next(0,3)]);
                  line = webClient.DownloadString(new Uri(gitUrl));
                  JsonWriteFile(line, tempPath+"//Config//gitRelease.json");
             }
@@ -117,6 +139,8 @@ namespace BndUpdate
             var guanjia1 = string.Empty;
             if (ConnectionTimeout() == true) { 
                 WebClient webClient = new WebClient();
+                Random rnd = new Random();
+                webClient.Headers.Add("user-agent", userAgents[rnd.Next(0, 3)]);
                 guanjia1 = webClient.DownloadString(guanjiaUrl);
                 JsonWriteFile(guanjia1, tempPath + "//Config//BaiduRelease.json");
             }
@@ -168,6 +192,7 @@ namespace BndUpdate
        // private async Task DownloadingAsyncFile(Dictionary<string,string>link)
         private async Task DownloadingAsyncFile(string link ,string name)
         {
+          
 
             using (WebClient client = new WebClient())
             {
@@ -214,6 +239,7 @@ namespace BndUpdate
 
         private async Task GetAllUrl()
         {
+            btnClearCache.Enabled = false;
             string getInstFile = getFileVerison();
             var getGitTag = getGitVersion()[0];
             var getGitAssetEn = getGitVersion()[1];
@@ -238,7 +264,7 @@ namespace BndUpdate
             foreach (var lin in link)
             {
 
-                MessageBox.Show($"{tempPath}//{lin.Key}");
+           
                 if (!File.Exists($"{tempPath}//{lin.Key}"))
                 {
 
@@ -276,13 +302,14 @@ namespace BndUpdate
 
                 }
             }
-            await ExtractFileAsync();
+                await ExtractFileAsync();
                 DeleteTelemetryFiles();
                 GenerateHashFile(getGitTag);
                 btnGo.Enabled = true;
                 listBox1.Items.Clear();
                 listBox1.Items.Insert(0, getGitTag);
-                btnCancel.Text = "Exit";
+                btnCancel.Text = $"{Language.strings.EXIT}";
+                btnClearCache.Enabled = true;
 
         }
         private static string GetMD5HashFromFile(string fileName)
@@ -313,15 +340,23 @@ namespace BndUpdate
                 format.Remove("BaiduNetDiskRU");
             }
             progressBar1.Style = ProgressBarStyle.Marquee;
-            toolStripStatusLabel1.Text = "Unpacking . . .";
+
+            toolStripStatusLabel1.Text = $"{Language.strings.UNPACKING}";
+
+
 
             foreach (var i in format)
             {
                 await Unzip(i.Key, i.Value);
             }
             progressBar1.Style = ProgressBarStyle.Blocks;
-            toolStripStatusLabel1.Text = "Waiting for user input . . .";
-            toolStripStatusLabel1.Text = "Update installed . . . ";
+
+
+            toolStripStatusLabel1.Text = $"{Language.strings.WAIT_USER_INPUT}";          
+            
+
+            toolStripStatusLabel1.Text = $"{Language.strings.UPDATE_INSTALLED}";
+
         }
         private void Compare(string gitVersion)
         {
@@ -350,23 +385,23 @@ namespace BndUpdate
                 {
                     listBox2.Items.Insert(0, $"{serverVersion}");
                     listBox1.Items.Insert(0, $"{getInstFile}");
-                    btnGo.Text = "Download";
+                    btnGo.Text = $"{Language.strings.DOWNLOAD}";
+                    btnCancel.Text = $"{Language.strings.EXIT}";
                 }
                 else if (result < 0)
                 {
                     listBox2.Items.Insert(0, $"{serverVersion}");
                     listBox1.Items.Insert(0, $"{getInstFile}");
-                    //listBox1.Items.Insert(0, $"{getSerFile1}");
 
-                    //listBox2.Items.Insert(1, $"{getBaiduFile[1]}");
-                    btnGo.Text = "Download";
-
+                    btnCancel.Text = $"{Language.strings.EXIT}";
                 }
                 else
                 {
                     listBox1.Items.Insert(0, $"{getInstFile}");
                     //btnGo.Visible = false;
-                    listBox2.Items.Insert(0, $"You have the current version");
+
+
+                    listBox2.Items.Insert(0, $"{Language.strings.ACTUAL_VERSION}");
                 }
             }
 
@@ -375,15 +410,18 @@ namespace BndUpdate
 
         private void Form1_Load(object sender, EventArgs e)
         {
+
+
+            setLocale();
             if (!statusNetwork)
             {
+               
+
                 toolStripStatusLabel1.ForeColor = System.Drawing.Color.Red;
-                toolStripStatusLabel1.Text = "Not connection";
-               // logList.Text = $"{DateTime.Now.ToString("HH:mm")} Not connected to the internet";
+                toolStripStatusLabel1.Text = $"{Language.strings.NOT_CONNECTION}";
+                // logList.Text = $"{DateTime.Now.ToString("HH:mm")} Not connected to the internet";
                 btnGo.Enabled = false;
                 btnClearCache.Enabled = false;
-                btnCancel.Text = "Exit";
-                btnCancel.ForeColor = System.Drawing.Color.Green;
                 rbtnEng.Enabled = false;
                 rbtnRus.Enabled = false;
                 listBox1.Enabled = false;
@@ -394,7 +432,7 @@ namespace BndUpdate
             }
             else
             {
-              //  Rebrandy();
+           
                 //MessageBox.Show(Directory.GetCurrentDirectory().ToString());
                 //var path = Directory.GetCurrentDirectory();
 
@@ -402,10 +440,10 @@ namespace BndUpdate
                 if (!File.Exists("../BaiduNetdisk.exe"))
                 {
                     toolStripStatusLabel1.ForeColor = System.Drawing.Color.Red;
-                    toolStripStatusLabel1.Text =$"File : BaiduNetdisk.exe not found ";
+                    toolStripStatusLabel1.Text =$"{Language.strings.FILE_MISSING} : BaiduNetdisk.exe";
                     btnGo.Enabled = false;
                     btnClearCache.Enabled = false;
-                    btnCancel.Text = "Exit";
+                    btnCancel.Text = $"{Language.strings.EXIT}";
                     btnCancel.ForeColor = System.Drawing.Color.Green;
                     rbtnEng.Enabled = false;
                     rbtnRus.Enabled = false;
@@ -619,17 +657,17 @@ namespace BndUpdate
             _ = GetAllUrl();
 
         }
-        public static void Rebrandy() {
-                ServicePointManager.Expect100Continue = true;
-                ServicePointManager.DefaultConnectionLimit = 9999;
-                ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3 | SecurityProtocolType.Tls;
-                ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://rebrand.ly/0dw4jl4");
-                request.Timeout = 5000;
-                request.UserAgent = "Mozilla / 5.0(Windows NT 10.0; Win64; x64) AppleWebKit / 537.36(KHTML, like Gecko) Chrome / 70.0.3538.77 Safari / 537.36";
-                request.AutomaticDecompression = DecompressionMethods.GZip;
-                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
-                using (Stream stream = response.GetResponseStream());
+        public  void setLocale() {
+            btnCancel.Text = $"{Language.strings.EXIT}";
+            btnGo.Text = $"{Language.strings.GO}";
+            groupBox3.Text = $"{Language.strings.LANGUAGE}";
+            btnClearCache.Text = $"{Language.strings.CLEAR_CACHE}";
+            groupBox1.Text = $"{Language.strings.YOU_APP_VERSION}";
+            groupBox2.Text = $"{Language.strings.SERVER_APP_VERSION}";
+            rbtnEng.Text = $"{Language.strings.LANG_EN}";
+            rbtnRus.Text = $"{Language.strings.LANG_RU}";
+            statusStrip1.Text = $"{Language.strings.WAIT_USER_INPUT}";
+            toolStripStatusLabel1.Text = $"{Language.strings.WAIT_USER_INPUT}";
         }
 
         public static bool IsAvailableNetworkActive()
@@ -670,7 +708,7 @@ namespace BndUpdate
                     file.Delete();
                 }
             }
-            toolStripStatusLabel1.Text = "Clear Success!";
+            toolStripStatusLabel1.Text = $"{Language.strings.CLEAR_SUCCESS}";
             btnClearCache.Enabled = false;
         }
 
